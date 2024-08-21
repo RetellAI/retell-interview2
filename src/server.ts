@@ -5,14 +5,9 @@ import { createServer, Server as HTTPServer } from "http";
 import cors from "cors";
 import { TwilioClient } from "./twilio_api";
 import { Retell } from "retell-sdk";
-import { RegisterCallResponse } from "retell-sdk/resources/call";
 import { CustomLlmRequest, CustomLlmResponse } from "./types";
-// Any one of these following LLM clients can be used to generate responses.
 import { FunctionCallingLlmClient } from "./llms/llm_openai_func_call";
-// import { DemoLlmClient } from "./llms/llm_azure_openai";
-// import { FunctionCallingLlmClient } from "./llms/llm_azure_openai_func_call_end_call";
-// import { FunctionCallingLlmClient } from "./llms/llm_azure_openai_func_call";
-// import { DemoLlmClient } from "./llms/llm_openrouter";
+import { WebCallResponse } from "retell-sdk/resources";
 
 export class Server {
   private httpServer: HTTPServer;
@@ -36,13 +31,6 @@ export class Server {
     this.handleRetellLlmWebSocket();
     this.handleRegisterCallAPI();
     this.handleWebhook();
-
-    // If you want to create an outbound call with your number
-    // this.twilioClient.CreatePhoneCall(
-    //   "+14157122917",
-    //   "+14157122912",
-    //   "68978b1c29f5ff9c7d7e07e61124d0bb",
-    // );
   }
 
   listen(port: number): void {
@@ -94,12 +82,9 @@ export class Server {
         const { agent_id } = req.body;
 
         try {
-          const callResponse: RegisterCallResponse =
-            await this.retellClient.call.register({
+          const callResponse: WebCallResponse =
+            await this.retellClient.call.createWebCall({
               agent_id: agent_id,
-              audio_websocket_protocol: "web",
-              audio_encoding: "s16le",
-              sample_rate: 24000,
             });
           // Send back the successful response to the client
           res.json(callResponse);
@@ -164,12 +149,6 @@ export class Server {
               console.clear();
               console.log("req", request);
               llmClient.DraftResponse(request, ws);
-            } else if (request.interaction_type === "ping_pong") {
-              let pingpongResponse: CustomLlmResponse = {
-                response_type: "ping_pong",
-                timestamp: request.timestamp,
-              };
-              ws.send(JSON.stringify(pingpongResponse));
             } else if (request.interaction_type === "update_only") {
               // process live transcript update if needed
             }

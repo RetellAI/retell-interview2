@@ -53,7 +53,7 @@ make a phone call with an agent, etc. Here we assume you already created agent f
 
 To use these features, follow these steps:
 
-1. Uncomment twilio client initialization and `ListenTwilioVoiceWebhook(this.app)` in `src/server.ts` file to set up Twilio voice webhook. What this does is that every time a number of yours in Twilio get called, it would call this webhook which internally calls the `register-call` API and sends the correct audio websocket address back to Twilio, so it can connects with Retell to start the call.
+1. Uncomment twilio client initialization and `ListenTwilioVoiceWebhook(this.app)` in `src/server.ts` file to set up Twilio voice webhook. What this does is that every time a number of yours in Twilio get called, it would call this webhook which internally calls the `register-phone-call` API and sends the correct audio websocket address back to Twilio, so it can connects with Retell to start the call.
 
 2. Put your ngrok ip address into `.env.development`, it would be something like `https://dc14-2601-645-c57f-8670-9986-5662-2c9a-adbd.ngrok-free.app`.
 

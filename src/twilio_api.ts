@@ -3,7 +3,7 @@ import VoiceResponse from "twilio/lib/twiml/VoiceResponse";
 import expressWs from "express-ws";
 import twilio, { Twilio } from "twilio";
 import Retell from "retell-sdk";
-import { RegisterCallResponse } from "retell-sdk/src/resources";
+import { PhoneCallResponse } from "retell-sdk/resources";
 
 export class TwilioClient {
   private twilio: Twilio;
@@ -129,12 +129,9 @@ export class TwilioClient {
             return;
           }
 
-          const callResponse: RegisterCallResponse =
-            await this.retellClient.call.register({
+          const callResponse: PhoneCallResponse =
+            await this.retellClient.call.registerPhoneCall({
               agent_id: agent_id,
-              audio_websocket_protocol: "twilio",
-              audio_encoding: "mulaw",
-              sample_rate: 8000,
               from_number: from,
               to_number: to,
               metadata: { twilio_call_sid: callSid },

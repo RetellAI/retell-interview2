@@ -92,7 +92,7 @@ export class FunctionCallingLlmClient {
       response_id: 0,
       content: beginSentence,
       content_complete: true,
-      end_call: false,
+      end_call: true,
     };
     ws.send(JSON.stringify(res));
   }
@@ -221,15 +221,14 @@ export class FunctionCallingLlmClient {
       ];
 
       const events = await this.client.chat.completions.create({
-        //model: "gpt-3.5-turbo-0125",
-        model: "gpt-4-turbo-preview",
+        model: "gpt-3-turbo",
         messages: requestMessages,
         stream: true,
         temperature: 0.1,
         max_tokens: 200,
         frequency_penalty: 1.0,
         presence_penalty: 1.0,
-        // Step 3: Add the  function into your requsts
+        // Step 3: Add the  function into your requests
         tools: tools,
       });
 
@@ -312,7 +311,7 @@ export class FunctionCallingLlmClient {
             response_type: "tool_call_invocation",
             tool_call_id: funcCall.id,
             name: funcCall.funcName,
-            arguments: JSON.stringify(funcCall.arguments)
+            arguments: JSON.stringify(funcCall.arguments),
           };
           ws.send(JSON.stringify(functionInvocationResponse));
 
